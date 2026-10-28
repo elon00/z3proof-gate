@@ -26,6 +26,12 @@ class Z3GateTests(unittest.TestCase):
         with self.assertRaises(GateError):
             check_smt2("(assert (= 1")
 
+    def test_invalid_input_cannot_poison_following_valid_proof(self):
+        with self.assertRaises(GateError):
+            check_smt2('(assert (= 1')
+        self.assertEqual(check_smt2(SAT), 'sat')
+        self.assertEqual(check_smt2(UNSAT), 'unsat')
+
     def test_empty_rejected(self):
         with self.assertRaises(GateError):
             check_smt2(" ")
