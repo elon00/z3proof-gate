@@ -1,31 +1,30 @@
-﻿# Z3proof Gate (ticker)
-> Autonomous Production-Grade Protocol
+# Z3proof Gate — bounded offline SMT verification
 
-[![CI/CD Pipeline](https://github.com/elon00/z3proof-gate/actions/workflows/ci-cd-pipeline.yml/badge.svg)](https://github.com/elon00/z3proof-gate/actions)
-[![Score](https://img.shields.io/badge/Reality%20Gates-100%2F100%20GENUINE%20GREEN-2ea44f?style=flat-square)](#reality-check-verification)
-[![NIST PQC](https://img.shields.io/badge/Security-NIST%20FIPS%20203%20%26%20204-blue?style=flat-square)](#security)
-[![Verified](https://img.shields.io/badge/Status-100%25%20Verified-gold?style=flat-square)](#pillars)
+Canonical ID: **QMOOSA-0765** (tests component). This repository contains a small, genuine Z3-based SAT/UNSAT verification gate; it is **not** a complete formal-verification platform or production-certified security system.
 
----
+## Reproduce
 
-## About Z3proof Gate
-**Z3proof Gate (\ticker)** is an autonomous, decentralized, post-quantum intelligence protocol engineered for production-grade operational efficiency and cryptographic trust.
+Requires Python 3.11 and the actual Z3 solver binding (no mock solver):
 
----
+```bash
+python -m pip install --no-deps z3-solver==4.13.4.0
+python -m tools.z3_gate --self-check
+python -m unittest discover -s tests -p 'test_*.py' -v
+```
 
-## Running the Protocol Locally
+To verify a safety property, encode its **negation** as SMT-LIB2 and require UNSAT:
 
-### 1. Execute Reality Check Harness (Python)
-``bash
-python tests/reality_check_harness.py
-``
+```bash
+python -m tools.z3_gate --file property-negation.smt2 --expect unsat
+```
 
-### 2. Run the High-Performance Rust State Engine
-``bash
-cargo run
-``
+SAT, malformed input, solver UNKNOWN, timeouts, resource failures, missing Z3, and unexpected results must not be reported as a verified proof. The gate bounds input to 16 KiB and solver timeout to 10 seconds maximum. A passing UNSAT result only establishes unsatisfiability of the exact submitted constraints under Z3 semantics; it does not establish the completeness or correctness of the model.
 
----
+## Scope and evidence
 
-## Reality Check Verification
-Z3proof Gate enforces strict pre-deployment verification: all invariants, cryptographic proofs, and micro-escrow contracts must achieve a **100/100 Genuine Green** rating before mainnet settlement.
+- Real Python Z3 solver integration and adversarial regressions are proposed in a draft PR, pending exact-HEAD GitHub Actions evidence and review.
+- No PQC implementation, FIPS 203/204/205 validation, authenticated RPC, deployment, wallet, escrow, or tokenomics is verified here.
+- SECURITY_APPROVED, DEPLOYMENT_READY, and production certification: **NOT VERIFIED**.
+- This code is for local, offline analysis; do not use it to authorize transactions or bypass security controls.
+
+See `ARCHITECTURE.md` and GitHub Actions for the actual verification boundary.

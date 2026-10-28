@@ -1,31 +1,18 @@
-﻿# z3proof-gate (}ticker) // PRODUCTION ARCHITECTURE BLUEPRINT
+# Z3proof Gate — verified scope and architecture
 
-> **Canonical System ID**: QMOOSA-0765  
-> **Component Role**: TESTS  
-> **Institutional Reality Gate Compliance**: 100/100 VERIFIED  
+**Canonical ID:** QMOOSA-0765  
+**Role:** Tests / SMT verification gate  
+**Readiness:** Development only; security approval and deployment readiness not established.
 
----
+## Implemented boundary
 
-## 1. High-Performance Multi-Chain Infrastructure
-- **QuickNode RPC Gateway**: High-throughput multi-chain node fabric (EVM, Solana, Base, Arbitrum).
-- **Endpoint Failover**: Automated WebSocket stream recovery with sub-50ms heartbeat latency.
+`tools/z3_gate.py` parses bounded SMT-LIB2 assertions using the actual pinned `z3-solver` Python package. It checks SAT or UNSAT with finite timeout and resource bounds, fails closed for UNKNOWN/parse errors, and exposes an explicit expected-result CLI. `tests/test_z3_gate.py` exercises satisfiable, contradictory, malformed, oversized and unexpected-result inputs using a real solver.
 
-## 2. Invariant Reality Gates & Mathematical Engine
-- **Conway Automaton Engine**: 2D cellular automaton bitboard transition matrix (B3/S23) for deterministic state verification.
-- **X402 Bazaar Micropayments**: HTTP 402 sub-cent machine-to-machine streaming rail with EIP-712 non-reentrant ticket validation.
-- **Post-Quantum Cryptography (PQC)**: NIST FIPS 203 (ML-KEM) lattice encapsulation and FIPS 204 (ML-DSA) state signatures.
+## Not implemented or independently verified
 
-## 3. Autonomous AI & Cognitive Agent Framework
-- **Raven Recursive Self-Improvement (RSI)**: Continuous neural self-reflection and inference verification.
-- **REA (Reasoning & Execution Agent)**: Actor-model cognitive task dispatcher.
-- **Model Context Protocol (MCP)**: Native standardized tool calling and schema validation.
+- A sound and complete formal model for any specific blockchain or cryptographic protocol.
+- Production-grade cryptography, FIPS conformance, PQC, QuickNode RPC, x402, Conway automata, agentics, or settlement.
+- Cross-process AES-GCM nonce safety in the separate Batch 14 TLS engine.
+- Any production certification, deployment readiness, or 100/100 portfolio score.
 
-## 4. Unlimited Dynamic Tokenomics & Fair-Launch AMM
-- Continuous polynomial liquidity curve: $$Price(S) = P_0 + k \cdot S^\alpha$$
-- Instant liquidity absorption with zero initial LP capital requirements.
-
-## 5. Security & Verification Harness
-- Automated Smoke Test (<30s runtime)
-- 10,000-cycle Invariant Regression Battery
-- Memory and Thread Sanitizers
-- GitHub Actions CodeQL Security Analysis CI
+The legacy Rust executable is deliberately fail-closed and does not claim verification. Only the Python Z3 gate is in scope. No remote service, secrets, gas, or cycles are used. Security approval requires a separate model review and independent assessment.
