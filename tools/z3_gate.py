@@ -10,7 +10,7 @@ import json
 import sys
 from pathlib import Path
 
-from z3 import Solver, Z3Exception, get_version_string, parse_smt2_string, sat, unsat
+from z3 import Context, Solver, Z3Exception, get_version_string, parse_smt2_string, sat, unsat
 
 MAX_INPUT_BYTES = 16_384
 MAX_TIMEOUT_MS = 10_000
@@ -30,10 +30,12 @@ def check_smt2(text: str, timeout_ms: int = 2_000) -> str:
     if "\x00" in text:
         raise GateError("NUL byte is not permitted")
     try:
-        constraints = parse_smt2_string(text)
+        # A fresh context prevents malformed input from contaminating later parses.
+        ctx = Context()
+        constraints = parse_smt2_string(text, ctx=ctx)
         if len(constraints) == 0:
             raise GateError("at least one assertion is required")
-        solver = Solver()
+        solver = Solver(ctx=ctx)
         solver.set(timeout=timeout_ms)
         solver.set(rlimit=500_000)
         solver.add(*constraints)
