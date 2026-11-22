@@ -1,37 +1,21 @@
-﻿import sys
-import time
+"""Legacy entry point: run a genuine, narrowly scoped Z3 solver self-check.
 
-def test_reality_check():
-    print("[1/5] Testing QuickNode Multi-Chain Global Relayer...")
-    assert True
-    print("      -> QuickNode Global Relayer: PASS")
+No RPC, PQC, escrow, FIPS, or production status is asserted here.
+"""
+from pathlib import Path
+import sys
 
-    print("[2/5] Verifying NIST PQC ML-KEM/ML-DSA Invariant Security Vault...")
-    entropy = 0x55AA55AA55AA55AA
-    assert entropy != 0
-    print("      -> Post-Quantum Cryptographic Integrity: PASS")
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from tools.z3_gate import check_smt2  # noqa: E402
 
-    print("[3/5] Verifying Conway 2D Bitboard Non-Linear Invariant State Machine...")
-    state = 0x55AA55AA55AA55AA
-    for _ in range(10_000):
-        state = (state ^ ((state >> 7) | (state << 57)) ^ 0x9E3779B97F4A7C15) & 0xFFFFFFFFFFFFFFFF
-    assert state != 0
-    print("      -> Invariant State Verification: PASS")
 
-    print("[4/5] Testing Protocol Operational Grid...")
-    grid = ["Core Consensus Layer", "Cross-Chain Relayers", "Decentralized Escrows", "Governance Attestations"]
-    for item in grid:
-        record = {"pillar": item, "status": 200, "invariant": "VERIFIED"}
-        assert record["status"] == 200
-    print("      -> Operational Invariant Grid: PASS")
+def main():
+    sat_case = "(declare-const x Int)\n(assert (> x 0))"
+    unsat_case = sat_case + "\n(assert (< x 0))"
+    assert check_smt2(sat_case) == "sat"
+    assert check_smt2(unsat_case) == "unsat"
+    print("Real Z3 SAT/UNSAT self-check PASS; other security claims NOT VERIFIED")
 
-    print("[5/5] Testing Zero-Leakage Protocol Escrows...")
-    assert 1 + 1 == 2
-    print("      -> Zero-Bureaucracy Direct Impact Escrows: PASS")
 
-    print("=======================================================")
-    print("[SUCCESS] Z3proof Gate REALITY GATES PASSED // SCORE: 100/100")
-    print("=======================================================")
-
-if __name__ == '__main__':
-    test_reality_check()
+if __name__ == "__main__":
+    main()
